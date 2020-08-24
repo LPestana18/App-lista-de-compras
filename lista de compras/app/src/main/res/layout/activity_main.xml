@@ -17,11 +17,17 @@
         />
 
     <Button
-        android:id="@+id/list_view_pŕodutos"
+        android:id="@+id/btn_inserir"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="Inserir"
         android:layout_marginTop="8dp"
         />
-    
+
+    <ListView
+        android:id="@+id/list_view_produtos"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        />
+
 </LinearLayout>
