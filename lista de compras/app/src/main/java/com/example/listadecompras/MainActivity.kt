@@ -22,8 +22,17 @@ class MainActivity : AppCompatActivity() {
             // Pegando o valor digitado pelo usuário
             val produto = txt_produto.text.toString()
 
-            // Enviado o item para a lista
-            produtosAdapter.add(produto)
+            // Verificando se o usuário digitou algum valor
+            if(produto.isNotEmpty()){
+                // Enviado o item para a lista
+                produtosAdapter.add(produto)
+
+                // Limpando a caixa de text
+                txt_produto.text.clear()
+
+            }else {
+                txt_produto.error = "Preencha um valor"
+            }
 
         }
     }
