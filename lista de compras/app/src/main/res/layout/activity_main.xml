@@ -8,26 +8,26 @@
     android:padding="16dp"
     tools:context=".MainActivity">
 
-    <EditText
-        android:id="@+id/txt_produto"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:hint="Nome do produto"
-        android:layout_marginTop="8dp"
-        />
-
     <Button
-        android:id="@+id/btn_inserir"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Inserir"
+        android:text="@string/adicionar_itens"
+        android:id="@+id/btn_adicionar" />
+    <TextView
+        android:id="@+id/txt_total"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:padding="10dp"
+        android:text="@string/totalItens"
         android:layout_marginTop="8dp"
-        />
+        android:layout_marginBottom="8dp"
+        android:textSize="24sp"
+        android:textStyle="bold" />
+
 
     <ListView
         android:id="@+id/list_view_produtos"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        />
+        android:layout_height="wrap_content" />
 
 </LinearLayout>

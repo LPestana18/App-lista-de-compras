@@ -19,23 +19,7 @@ class MainActivity : AppCompatActivity() {
         list_view_produtos.adapter = produtosAdapter
 
         // Definição do ouvinte do botão
-        btn_inserir.setOnClickListener{
 
-            // Pegando o valor digitado pelo usuário
-            val produto = txt_produto.text.toString()
-
-            // Verificando se o usuário digitou algum valor
-            if(produto.isNotEmpty()){
-                // Enviado o item para a lista
-                produtosAdapter.add(produto)
-
-                // Limpando a caixa de text
-                txt_produto.text.clear()
-
-            }else {
-                txt_produto.error = "Preencha um valor"
-            }
-        }
 
         list_view_produtos.setOnItemLongClickListener{
             adapterView: AdapterView<*>?, view: View, i: Int, l: Long ->
