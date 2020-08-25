@@ -1,5 +1,6 @@
 package com.example.listadecompras
 
+import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.View
@@ -20,6 +21,15 @@ class MainActivity : AppCompatActivity() {
 
         // Definição do ouvinte do botão
 
+        btn_adicionar.setOnClickListener {
+
+            // criando a Intent explícita
+            val intent = Intent(this, CadastroActivity::class.java)
+
+            // iniciando a atividade
+            startActivity(intent)
+
+        }
 
         list_view_produtos.setOnItemLongClickListener{
             adapterView: AdapterView<*>?, view: View, i: Int, l: Long ->
