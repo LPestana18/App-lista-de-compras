@@ -8,6 +8,7 @@ import android.view.ViewGroup
 import android.widget.ArrayAdapter
 import android.widget.ImageView
 import android.widget.TextView
+import kotlinx.android.synthetic.main.activity_cadastro.*
 import java.text.NumberFormat
 import java.util.*
 
@@ -15,15 +16,14 @@ class ProdutoAdapter(contexto: Context) : ArrayAdapter<Produto>(contexto, 0) {
 
     override fun getView(position: Int, convertView: View?, parent: ViewGroup): View {
 
-        val v : View
+        val v: View
 
         if (convertView != null) {
             v = convertView
         } else {
-            Log.d("parent", parent.toString())
-            // inflar o layout
-            LayoutInflater.from(context).inflate(R.layout.list_view_item, parent, false)
+            v = LayoutInflater.from(context).inflate(R.layout.list_view_item, parent, false)
         }
+
 
         val item = getItem(position)
 
@@ -34,17 +34,17 @@ class ProdutoAdapter(contexto: Context) : ArrayAdapter<Produto>(contexto, 0) {
 
         txt_qtd.text = item?.quantidade.toString()
         txt_produto.text = item?.nome
-        txt_valor.text = item?.valor.toString()
 
-        // obtendo a instancia do objeto de formatação
+        //obtendo a instancia do objeto de formatação
         val f = NumberFormat.getCurrencyInstance(Locale("pt", "br"))
 
-        // formatando a variável no formato moeda
+        //formatando a variável no formato moeda
         txt_valor.text = f.format(item?.valor)
 
         if (item?.foto != null) {
             img_produto.setImageBitmap(item.foto)
         }
+
 
         return v
     }
