@@ -2,6 +2,8 @@ package com.example.listadecompras
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.view.View
+import android.widget.AdapterView
 import android.widget.ArrayAdapter
 import kotlinx.android.synthetic.main.activity_main.*
 
@@ -33,7 +35,19 @@ class MainActivity : AppCompatActivity() {
             }else {
                 txt_produto.error = "Preencha um valor"
             }
+        }
 
+        list_view_produtos.setOnItemLongClickListener{
+            adapterView: AdapterView<*>?, view: View, i: Int, l: Long ->
+
+            // buscando o item clicado
+            val item = produtosAdapter.getItem(i)
+
+            // removendo o time clicado da lista
+            produtosAdapter.remove(item)
+
+            // Retorno indicando que o click foi realizado com sucesso
+            true
         }
     }
 }
