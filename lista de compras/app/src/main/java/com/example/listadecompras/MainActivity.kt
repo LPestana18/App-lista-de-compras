@@ -5,19 +5,23 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.View
 import android.widget.AdapterView
-import android.widget.ArrayAdapter
 import com.example.listadecompras.database.database
 import kotlinx.android.synthetic.main.activity_main.*
+import org.jetbrains.anko.db.delete
 import org.jetbrains.anko.db.parseList
 import org.jetbrains.anko.db.rowParser
 import org.jetbrains.anko.db.select
+import org.jetbrains.anko.toast
 import java.text.NumberFormat
 import java.util.*
 
 class MainActivity : AppCompatActivity() {
 
+
+
     override fun onResume() {
         super.onResume()
+
         val adapter = list_view_produtos.adapter as ProdutoAdapter
 
         database.use {
@@ -25,11 +29,10 @@ class MainActivity : AppCompatActivity() {
             select("produtos").exec {
 
                 //Criando o parser que montará o objeto produto
-                val parser = rowParser{
-                    id: Int, nome: String,
-                        quantidade: Int,
-                        valor: Double,
-                        foto: ByteArray? ->
+                val parser = rowParser { id: Int, nome: String,
+                                         quantidade: Int,
+                                         valor: Double,
+                                         foto: ByteArray? ->
                     //Colunas do banco de dados
 
                     //Montagem do objeto Produto com as colunas do banco
@@ -48,21 +51,22 @@ class MainActivity : AppCompatActivity() {
 
                 //formatando em formato moeda
                 val f = NumberFormat.getCurrencyInstance(Locale("pt", "br"))
-                txt_total.text = "TOTAL: ${ f.format(soma)}"
+                txt_total.text = "TOTAL: ${f.format(soma)}"
             }
         }
     }
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
+
         //Implementação do adaptador
-        val produtosAdapter = ProdutoAdapter(this)
-        produtosAdapter.addAll(produtoGlobal)
+        val adapter = ProdutoAdapter(this)
 
         // Definindo o adaptador na lista
-        list_view_produtos.adapter = produtosAdapter
+        list_view_produtos.adapter = adapter
 
         // Definição do ouvinte do botão
 
@@ -76,19 +80,29 @@ class MainActivity : AppCompatActivity() {
 
         }
 
-        list_view_produtos.setOnItemLongClickListener{
-            adapterView: AdapterView<*>?, view: View, i: Int, l: Long ->
+        //Definição do ouvinte da lista para clicks longos
+        list_view_produtos.setOnItemLongClickListener { adapterView: AdapterView<*>?, view: View, i: Int, l: Long ->
 
-            // buscando o item clicado
-            val item = produtosAdapter.getItem(i)
+            //buscando o item clicado
+            val item = adapter.getItem(i)
 
-            // removendo o time clicado da lista
-            produtosAdapter.remove(item)
+            //removendo o item clicado da lista
+            adapter.remove(item)
 
-            // Retorno indicando que o click foi realizado com sucesso
+            //delentando do banco de dados
+            deletarProduto(item!!.id)
+
+            toast("item deletado com sucesso")
+
             true
         }
+    }
 
+    fun deletarProduto(idProduto: Int) {
+
+        database.use {
+            delete("produtos", "id = {id}", "id" to idProduto)
+        }
     }
 
 }
