@@ -6,24 +6,51 @@ import android.os.Bundle
 import android.view.View
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
+import com.example.listadecompras.database.database
 import kotlinx.android.synthetic.main.activity_main.*
+import org.jetbrains.anko.db.parseList
+import org.jetbrains.anko.db.rowParser
+import org.jetbrains.anko.db.select
 import java.text.NumberFormat
 import java.util.*
 
 class MainActivity : AppCompatActivity() {
 
     override fun onResume() {
-
         super.onResume()
         val adapter = list_view_produtos.adapter as ProdutoAdapter
 
-        adapter.clear()
-        adapter.addAll(produtoGlobal)
+        database.use {
+            //Efetuando uma consulta no banco de dados
+            select("produtos").exec {
 
-        val soma = produtoGlobal.sumByDouble { it.valor * it.quantidade }
+                //Criando o parser que montará o objeto produto
+                val parser = rowParser{
+                    id: Int, nome: String,
+                        quantidade: Int,
+                        valor: Double,
+                        foto: ByteArray? ->
+                    //Colunas do banco de dados
 
-        val f = NumberFormat.getCurrencyInstance(Locale("pt", "br"))
-        txt_total.text = "TOTAL: ${f.format(soma)}"
+                    //Montagem do objeto Produto com as colunas do banco
+                    Produto(id, nome, quantidade, valor, foto?.toBitmap())
+                }
+
+                //criando a lista de produtos com dados do banco
+                var listaProdutos = parseList(parser)
+
+                //limpando os dados da lista e carregando as novas informações
+                adapter.clear()
+                adapter.addAll(listaProdutos)
+
+                //efetuando a multiplicação e soma da quantidade e valor
+                val soma = listaProdutos.sumByDouble { it.valor * it.quantidade }
+
+                //formatando em formato moeda
+                val f = NumberFormat.getCurrencyInstance(Locale("pt", "br"))
+                txt_total.text = "TOTAL: ${ f.format(soma)}"
+            }
+        }
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
