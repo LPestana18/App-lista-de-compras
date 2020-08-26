@@ -1,22 +1,18 @@
 package com.example.listadecompras
 
-import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.View
 import android.widget.AdapterView
+import android.widget.ArrayAdapter
 import com.example.listadecompras.database.database
 import kotlinx.android.synthetic.main.activity_main.*
-import org.jetbrains.anko.db.delete
-import org.jetbrains.anko.db.parseList
-import org.jetbrains.anko.db.rowParser
-import org.jetbrains.anko.db.select
-import org.jetbrains.anko.toast
+import org.jetbrains.anko.*
+import org.jetbrains.anko.db.*
 import java.text.NumberFormat
 import java.util.*
 
 class MainActivity : AppCompatActivity() {
-
 
 
     override fun onResume() {
@@ -63,6 +59,9 @@ class MainActivity : AppCompatActivity() {
 
 
         //Implementação do adaptador
+
+        val adapter2 = ArrayAdapter<String>(this, android.R.layout.simple_list_item_1)
+
         val adapter = ProdutoAdapter(this)
 
         // Definindo o adaptador na lista
@@ -71,28 +70,73 @@ class MainActivity : AppCompatActivity() {
         // Definição do ouvinte do botão
 
         btn_adicionar.setOnClickListener {
+            startActivity<CadastroActivity>()
 
-            // criando a Intent explícita
-            val intent = Intent(this, CadastroActivity::class.java)
-
-            // iniciando a atividade
-            startActivity(intent)
+//            // criando a Intent explícita
+//            val intent = Intent(this, CadastroActivity::class.java)
+//
+//            // iniciando a atividade
+//            startActivity(intent)
 
         }
+
+//        list_view_produtos.setOnItemClickListener { adapterView: AdapterView<*>, view: View?, i: Int, l: Long ->
+//
+//            alert("Mensagem", "Titulo") {
+//                //botão OK
+//                yesButton {
+//                    //Ação caso escolheu a opção SIM
+//                }
+//
+//                // Botão cancel
+//
+//                noButton {
+//                    //Ação caso escolheu a opção NAO
+//                }
+//            }.show()
+//        }
 
         //Definição do ouvinte da lista para clicks longos
         list_view_produtos.setOnItemLongClickListener { adapterView: AdapterView<*>?, view: View, i: Int, l: Long ->
 
-            //buscando o item clicado
-            val item = adapter.getItem(i)
+            //SOLUÇÂO PARA ATUALIZAR UM REGISTRO
 
-            //removendo o item clicado da lista
-            adapter.remove(item)
+            val opcoes = listOf("editar", "excluir")
 
-            //delentando do banco de dados
-            deletarProduto(item!!.id)
+            val opc_editar = 0;
+            val opc_excluir = 1;
 
-            toast("item deletado com sucesso")
+            selector("O que deseja fazer?", opcoes) { dialogInterface, position ->
+
+                when (position) {
+
+                    opc_editar -> {
+                        alert("Editar").show()
+                        //toast("Editar)
+                        val idItem = adapter.getItem(i)
+                        val nome = adapter.getItem(i)
+
+                        atualizarProduto(idItem!!.id, nome!!.nome)
+
+                    }
+
+                    opc_excluir -> {
+
+                        //buscando o item clicado
+                        val item = adapter.getItem(i)
+
+                        //removendo o item clicado da lista
+                        adapter.remove(item)
+
+                        //delentando do banco de dados
+                        deletarProduto(item!!.id)
+
+                        toast("item deletado com sucesso")
+
+                    }
+                }
+
+            }
 
             true
         }
@@ -105,4 +149,9 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
+    fun atualizarProduto(idProduto: Int, nome: String) {
+        database.use {
+            update("produtos", "nome" to nome).whereArgs("id = {id}", "id" to idProduto).exec()
+        }
+    }
 }
